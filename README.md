@@ -1,6 +1,6 @@
 # 🌤️ AI Weather Station
 
-A voice-free, AI-powered weather station built with Python Flask, OpenWeatherMap, and OpenAI — now live at [weather-station-ai.onrender.com](https://weather-station-ai.onrender.com)
+An AI-powered weather station built with Python Flask, OpenWeatherMap, and OpenAI — now live at [weather-station-ai.onrender.com](https://weather-station-ai.onrender.com)
 
 ## 🔍 Features
 
