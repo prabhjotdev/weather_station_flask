@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Weather Station</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <style>
+    .typing::after {
+      content: "|";
+      animation: blink 0.7s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌤️ AI-Powered Weather Station</h1>
+
+    <form method="POST" action="/">
+      <input type="text" name="city" placeholder="Enter city (e.g., Paris, FR)" required>
+      <button type="submit">Search</button>
+    </form>
+
+    {% if error %}
+      <p style="color: red;">{{ error }}</p>
+    {% elif temp and condition %}
+      <p><strong>City:</strong> {{ city }}</p>
+      <p><strong>Temperature:</strong> {{ temp }}°C</p>
+      <p><strong>Condition:</strong> {{ condition }}</p>
+
+      <div class="section">
+        <h3>💬 Summary</h3>
+        <button onclick="generateAndDisplay('summary')">Generate Summary</button>
+        <p id="summary"></p>
+      </div>
+
+      <div class="section">
+        <h3>🎯 Suggestion</h3>
+        <button onclick="generateAndDisplay('suggestion')">Generate Suggestion</button>
+        <p id="suggestion"></p>
+      </div>
+
+      <div class="section">
+        <h3>📖 Weather Story</h3>
+        <button onclick="generateAndDisplay('story')">Generate Story</button>
+        <p id="story"></p>
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    const temp = "{{ temp }}";
+    const condition = "{{ condition }}";
+    const city = "{{ city }}";
+
+    function generateAndDisplay(action) {
+      const output = document.getElementById(action);
+      output.classList.add("typing");
+      output.textContent = "Generating...";
+
+      fetch('/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ temp, condition, city, action })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const text = data.result;
+        typeText(output, text);
+      });
+    }
+
+    function typeText(element, text) {
+      element.classList.remove("typing");
+      element.textContent = "";
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          element.textContent += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 30);
+    }
+  </script>
+</body>
+</html>
